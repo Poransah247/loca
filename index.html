@@ -1,1 +1,38 @@
+
+<!DOCTYPE html>
+<html>
+<body oncload="getLocation()">
+<h1>HTML Geolocation</h1>
+
+
+
+
+<p id="demo"></p>
+
+<script>
+const x = document.getElementById("demo");
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(success, error);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function success(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude + 
+  "<br>Longitude: " + position.coords.longitude;
+}
+
+function error() {
+  alert("Sorry, no position available.");
+}
+</script>
+
+</body>
+</html>
+
+
+
 <iframe src="https://giphy.com/embed/OfkGZ5H2H3f8Y" width="372" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/american-horror-story-ahs-excited-OfkGZ5H2H3f8Y">via GIPHY</a></p>
